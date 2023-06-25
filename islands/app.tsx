@@ -15,6 +15,7 @@ export default function Saizencode({ menus }: SaizencodeProps) {
   const [searchValue, setSearchValue] = useState("");
   const [filteredMenus, setFilteredMenus] = useState(menus);
   const [favoriteMenus, setFavoriteMenus] = useState<MenuItem[]>([]);
+  const [totalPrice, setTotalPrice] = useState(0);
 
   useEffect(() => {
     if (searchValue === "") {
@@ -32,15 +33,21 @@ export default function Saizencode({ menus }: SaizencodeProps) {
     }
   }, [searchValue, menus]);
 
+  useEffect(() => {
+    const sum = favoriteMenus.reduce((total, menu) => total + menu.price, 0);
+    setTotalPrice(sum);
+  }, [favoriteMenus]);
+
   const addToFavorites = (menu: MenuItem) => {
     setFavoriteMenus((prevFavorites) => [...prevFavorites, menu]);
   };
+
   const removeFromFavorites = (menu: MenuItem) => {
     setFavoriteMenus((prevFavorites) =>
       prevFavorites.filter((favorite) => favorite.id !== menu.id)
     );
   };
-  
+
   return (
     <div>
       <div className="flex m-4">
@@ -54,34 +61,40 @@ export default function Saizencode({ menus }: SaizencodeProps) {
           />
         </div>
       </div>
+
       <h3 class="text-lg font-bold  m-4">📌ピン留め</h3>
-      {favoriteMenus.map((favorite) => (
-        <div
-          key={favorite.id}
-          className="flex justify-between items-center bg-white p-4 mb-4 shadow-xl rounded-md font-bold"
-        >
-          <div className="flex items-center">
-            <div className="rounded-full flex justify-center items-center text-white font-bold text-3xl mr-4">
-              {favorite.emoji}
+      <div>
+        {favoriteMenus.map((favorite) => (
+          <div
+            key={favorite.id}
+            className="flex justify-between items-center bg-white p-4 mb-4 shadow-xl rounded-md font-bold"
+          >
+            <div className="flex items-center">
+              <div className="rounded-full flex justify-center items-center text-white font-bold text-3xl mr-4">
+                {favorite.emoji}
+              </div>
+              <div>
+                <p className="text-gray-500 text-sm font-bold">{favorite.id}</p>
+                <h3 className="text-lg font-bold">{favorite.name}</h3>
+              </div>
             </div>
-            <div>
-              <p className="text-gray-500 text-sm font-bold">{favorite.id}</p>
-              <h3 className="text-lg font-bold">{favorite.name}</h3>
+            <div className="flex items-center">
+              <span className="text-lg font-bold text-gray-800 mr-2">
+                {favorite.price}円
+              </span>
+              <button
+                className="bg-red-500 rounded-full w-6 h-6 text-white"
+                onClick={() => removeFromFavorites(favorite)}
+              >
+                ×
+              </button>
             </div>
           </div>
-          <div className="flex items-center">
-            <span className="text-lg font-bold text-gray-800 mr-2">
-              {favorite.price}円
-            </span>
-            <button
-              className="bg-red-500 rounded-full w-6 h-6 text-white"
-              onClick={() => removeFromFavorites(favorite)}
-            >
-              ×
-            </button>
-          </div>
-        </div>
-      ))}
+        ))}
+      </div>
+      <div class="flex items-center justify-end m-4">
+        <h3 class="text-lg font-bold">合計金額: {totalPrice}円</h3>
+      </div>
 
       <hr class="m-4"></hr>
       <h3 class="text-lg font-bold m-4">🥗メニュー 一覧</h3>
