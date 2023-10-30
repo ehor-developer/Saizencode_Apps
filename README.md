@@ -6,7 +6,7 @@
 メニュー番号やメニュー名、価格などからの検索に対応しています！
 このアプリはPreactとDenoを用いて制作を行いました。
 
-[デモはこちら](https://saizencode.deno.dev/)
+[デモはこちら](https://saizencode.ehor.work/)
 
 コードを実行する：
 
